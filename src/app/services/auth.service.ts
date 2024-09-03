@@ -2,8 +2,13 @@ import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 
-import { map } from 'rxjs';
+import { AppState } from '../app.reducer';
+import { Store } from '@ngrx/store';
+
+import { map, Subscription } from 'rxjs';
+
 import { Usuario } from '../models/usuario.models';
+import * as authActions from '../auth/auth.actions';
 
 
 @Injectable({
@@ -11,14 +16,32 @@ import { Usuario } from '../models/usuario.models';
 })
 export class AuthService {
 
+  userSubscription!: Subscription;
+
   constructor( 
     public auth: AngularFireAuth, 
-    public firestore: AngularFirestore
+    public firestore: AngularFirestore,
+    private store: Store<AppState>  
   ) { }
 
   initAuthListener(){
     this.auth.authState.subscribe( fuser => {
-      console.log(fuser)
+      if(fuser) {
+        console.log('=====USUARIO LOGUEADO=====',fuser)
+    this.userSubscription =    
+        this.firestore.doc(`${ fuser.uid }/usuario`).valueChanges()
+        .subscribe( (firestoreUser) => {
+          console.log("====DOCUMENTO======",firestoreUser)
+          const user = Usuario.fromFirebase( firestoreUser);
+          this.store.dispatch( authActions.setUser({ user  }));
+        })
+        
+      }else {
+        if(this.userSubscription)
+        this.userSubscription.unsubscribe();
+        this.store.dispatch( authActions.unSetUser() );
+
+      }
     })
   }
 
@@ -31,7 +54,8 @@ export class AuthService {
         }
       
         const  newUser  = new Usuario(fbUser.user.uid, nombre, fbUser.user.email);
-        return this.firestore.collection('usuarios').add({ ...newUser });
+
+        return this.firestore.doc(`${fbUser.user.uid }/usuario`).set({ ...newUser });
 
       })
   }
