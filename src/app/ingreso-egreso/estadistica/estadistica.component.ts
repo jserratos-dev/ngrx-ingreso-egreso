@@ -4,6 +4,7 @@ import { AppState } from '../../app.reducer';
 import { IngresoEgreso } from '../../models/ingreso-egreso.model';
 import { ChartData, ChartEvent, ChartType } from 'chart.js';
 import { Subscription } from 'rxjs';
+import { AppStateWithIngreso } from '../ingreso-egreso.reducers';
 
 @Component({
   selector: 'app-estadistica',
@@ -58,7 +59,7 @@ export class EstadisticaComponent implements OnInit, OnDestroy {
 
 
 
-  constructor( private store: Store<AppState>) {
+  constructor( private store: Store<AppStateWithIngreso>) {
 
   }
 

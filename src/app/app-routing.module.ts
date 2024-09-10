@@ -10,12 +10,12 @@ import { authGuard } from './services/auth.guard';
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
-  { 
-    path: '', 
-    component:DashboardComponent, 
-    children: dashboardRoutes,
-    canActivate:[ authGuard ]
-  },
+
+  { canMatch: [ authGuard ],
+    path: '',
+    loadChildren: () => import('./ingreso-egreso/ingreso-egreso.module').then( m => m.IngresoEgresoModule)
+   },
+
   { path: '**', redirectTo: ''}
 ];
 
