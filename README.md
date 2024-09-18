@@ -1,3 +1,9 @@
+# Ver la Aplicación
+
+Para ver la aplicación en vivo, haz clic en el siguiente enlace:
+
+[Ir a la aplicación de este repositorio](https://redux-ingreso-egreso-3d8b5.web.app/)
+
 # ReduxIngresoEgreso
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.1.
